@@ -13,39 +13,52 @@ def add_status(current_status_message):
         print "Your current status message is " + current_status_message + "\n"
     else:
         print 'Abhi tk tera status message diya nahi hua koi tune...  \n'
-    default = input("Ye status pehle vala hi dena hai kya? (y/n)? ")
+    default = raw_input("Ye status pehle vala hi dena hai kya? (y/n)? ")
     if default.upper() == "N":
-        new_status_message = input("Kuch btana chahoge apne dosto ko?")
+        new_status_message = raw_input("Kuch btana chahoge apne dosto ko?")
 
         if len(new_status_message) > 0:
+            STATUS_MESSAGES.append(new_status_message)
             updated_status_message = new_status_message
-            STATUS_MESSAGES.append(updated_status_message)
+
     elif default.upper() == "Y":
         item_position = 1
         for message in STATUS_MESSAGES:
-            print item_position + " , " + message
-            # can also use print '%d. %s' % (item_position, message)
-
+            # can also write print item_position + " , " + message
+            print '%d. %s' % (item_position, message)
+            # error----- item position is not printing more than 1
             item_position = item_position + 1  # incrementing the item_position in order to check other items in list
             message_selection = input(" Bta beta kya btana hai?? Number bol: ")
+
             if len(STATUS_MESSAGES) >= message_selection:
                 updated_status_message = STATUS_MESSAGES[message_selection - 1]
             else:
                 print 'You did not update your status message'
+            if updated_status_message:
+                print 'Your updated status message is: %s' % (updated_status_message)
+            else:
+                print 'Oh nadaan parinde status bta jaaa'
+
             return updated_status_message
 
 
 def add_friend():
-    friend_name = raw_input("Tere jesa yaar kahaaan ?? Vese tera naam to btaaaa:")
-    friend_salutation = raw_input("Arrre ye bta tu hai kya... Mr. or Ms.?:")
-    friend_name = friend_salutation + " " + friend_name
-    friend_age = input("Kitne saalo ka hai ye friend?")
-    friend_rating = input("bta bhai teri rating bta")
+    new_friend = {
+        'name': '',
+        'salutation': '',
+        'rating': 0.0,
+        'age': 0
+    }
+    new_friend['name'] = raw_input("Tere jesa yaar kahaaan ?? Vese tera naam to btaaaa:")
+    new_friend['salutation'] = raw_input("Arrre ye bta tu hai kya... Mr. or Ms.?:")
+    new_friend['name'] = new_friend['salutation'] + " " + new_friend['friend_name']
+    new_friend['age'] = input("Kitne saalo ka hai ye friend?")
+    new_friend['rating'] = input("bta bhai teri rating bta")
 
-    if friend_age > 12 and friend_rating >= spy_rating and len(friend_name) > 0:
-        friends_name.append(friend_name)
-        friends_age.append(friend_age)
-        friends_rating.append(friend_rating)
+    if new_friend['age'] > 12 and new_friend['rating'] >= spy_rating and len(new_friend['name']) > 0:
+        friends_name.append(new_friend['name'])
+        friends_age.append(new_friend['age'])
+        friends_rating.append(new_friend['rating'])
         friends_is_online.append(True)
         print 'Sabhi spyjano ko soochit kiya jata hai k hme ek mitra mila hai !'
     else:
@@ -60,6 +73,11 @@ question = "Continue as " + spy_salutation + " " + spy_name + "(Y/N)?"  # just t
 existing = raw_input(question)
 
 
+def select_a_friend():
+    # Implement later
+    pass
+
+
 def start_chat(spy_name, spy_age, spy_rating):
     current_status_message = None
     spy_name = spy_salutation + " " + spy_name
@@ -72,15 +90,16 @@ def start_chat(spy_name, spy_age, spy_rating):
             menu_choices = "What do you want to do? \n 1. Add a status update \n 2. Add a friend \n 3. Send a secret message \n 4. Read a secret message \n 5. Read Chats from a user \n 6. Close Application \n"
             menu_choice = input(menu_choices)
 
-            if len(menu_choice) > 0:
-                menu_choice = int(menu_choice)
-                if menu_choice == 1:
-                    current_status_message = add_status(current_status_message)
-                elif menu_choice == 2:
-                    number_of_friends = add_friend()
-                    print 'You have %d friends' % (number_of_friends)
-                else:
-                    show_menu = False
+            # if len(menu_choice) > 0:
+            #     menu_choice = int(menu_choice)
+
+            if menu_choice == 1:
+                current_status_message = add_status(current_status_message)
+            elif menu_choice == 2:
+                number_of_friends = add_friend()
+                print 'You have %d friends' % (number_of_friends)
+            else:
+                show_menu = False
 
     else:
         print 'tu chhod de moh maya tumse na ho paega '
