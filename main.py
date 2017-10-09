@@ -1,10 +1,14 @@
+from datetime import datetime
+import time
+from steganography.steganography import Steganography
 from spy_details import spy_name, spy_salutation, spy_age, spy_rating
 
 STATUS_MESSAGES = ['My name is Bond, James Bond', 'Shaken, not stirred.', 'Keeping the British end up, Sir']
-friends_name = []
-friends_age = []
-friends_rating = []
-friends_is_online = []
+# friends_name = []
+# friends_age = []
+# friends_rating = []
+# friends_is_online = []
+friends = []
 
 
 # below function add_status is used to add status by spy just like apps like fb has
@@ -28,18 +32,18 @@ def add_status(current_status_message):
             print '%d. %s' % (item_position, message)
             # error----- item position is not printing more than 1
             item_position = item_position + 1  # incrementing the item_position in order to check other items in list
-            message_selection = input(" Bta beta kya btana hai?? Number bol: ")
+        message_selection = input(" Bta beta kya btana hai?? Number bol: ")
 
-            if len(STATUS_MESSAGES) >= message_selection:
-                updated_status_message = STATUS_MESSAGES[message_selection - 1]
-            else:
-                print 'You did not update your status message'
-            if updated_status_message:
-                print 'Your updated status message is: %s' % (updated_status_message)
-            else:
-                print 'Oh nadaan parinde status bta jaaa'
+        if len(STATUS_MESSAGES) >= message_selection:
+            updated_status_message = STATUS_MESSAGES[message_selection - 1]
+    else:
+        print 'You did not update your status message'
+    if updated_status_message:
+        print 'Your updated status message is: %s' % (updated_status_message)
+    else:
+        print 'Oh nadaan parinde status bta jaaa'
 
-            return updated_status_message
+    return updated_status_message
 
 
 def add_friend():
@@ -47,23 +51,21 @@ def add_friend():
         'name': '',
         'salutation': '',
         'rating': 0.0,
-        'age': 0
+        'age': 0,
+        # 'online':False
     }
     new_friend['name'] = raw_input("Tere jesa yaar kahaaan ?? Vese tera naam to btaaaa:")
     new_friend['salutation'] = raw_input("Arrre ye bta tu hai kya... Mr. or Ms.?:")
-    new_friend['name'] = new_friend['salutation'] + " " + new_friend['friend_name']
+    new_friend['name'] = new_friend['salutation'] + " " + new_friend['name']
     new_friend['age'] = input("Kitne saalo ka hai ye friend?")
     new_friend['rating'] = input("bta bhai teri rating bta")
 
     if new_friend['age'] > 12 and new_friend['rating'] >= spy_rating and len(new_friend['name']) > 0:
-        friends_name.append(new_friend['name'])
-        friends_age.append(new_friend['age'])
-        friends_rating.append(new_friend['rating'])
-        friends_is_online.append(True)
+        friends.append(new_friend)
         print 'Sabhi spyjano ko soochit kiya jata hai k hme ek mitra mila hai !'
     else:
         print 'Tu nahi bn skta dost ....'
-    return len(friends_name)
+    return len(friends)
 
 
 print 'Hey spy '
@@ -73,9 +75,47 @@ question = "Continue as " + spy_salutation + " " + spy_name + "(Y/N)?"  # just t
 existing = raw_input(question)
 
 
+# below function is used for selecting a particular friend for chat
 def select_a_friend():
-    # Implement later
-    pass
+    friend_item_number = 0
+    for friend in friends:
+        print '%d %s aged %d having rating %2f is online' % (friend_item_number + 1, friend['name'],friend['age'],friend['rating'])
+        friend_item_number = friend_item_number + 1
+    friend_choice = input('Choose the number from your friends')
+    friend_choice_position = friend_choice - 1
+    return friend_choice_position
+
+
+def send_encoded_message():
+    friend_choice = select_a_friend()
+    original_image = raw_input('Abe bole to apni fotuu ka naam bta ?')
+    original_path = 'Manzil.jpg'
+    text = raw_input('Kya bhejna hai tujhe gupt rkhkr ..mujhe to btana pdega')
+    Steganography.encode(original_image, original_path, text)
+    new_chat = {
+        'message': text,
+        'time': datetime.now(),
+        'sent_by_me': True
+    }
+    print "Spyjan kripya dhyan de, apka secret message image ready hai!"
+
+    friends[friend_choice]['chats'].append(new_chat)
+
+
+def read_message():
+    sender = select_a_friend()
+    output_path = raw_input('Abe chl khajoor fotuu ka naam bta')
+    secret_text = Steganography.decode(output_path)
+    new_chat = {
+        "message": secret_text,
+        "time": datetime.now(),
+        "sent_by_me": False
+    }
+
+    # friends[sender]['chats'].append(new_chat)
+
+
+print "Abe oh kaaliaa , Message mere pas hai re!"
 
 
 def start_chat(spy_name, spy_age, spy_rating):
@@ -98,6 +138,10 @@ def start_chat(spy_name, spy_age, spy_rating):
             elif menu_choice == 2:
                 number_of_friends = add_friend()
                 print 'You have %d friends' % (number_of_friends)
+            elif menu_choice==3:
+                send_encoded_message()
+            elif menu_choice==4:
+                read_message()
             else:
                 show_menu = False
 
