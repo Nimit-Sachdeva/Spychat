@@ -24,6 +24,8 @@ spy = Spy('Spyderman', 'Mr.', 20, 5.0)
 friend_one = Spy('Spyderwoman', 'Ms.', 27,4.9)
 friend_two = Spy('Hitler', 'Mr.', 21,4.7)
 friend_three = Spy('Rocker', 'Mr.', 37,4.9)
+friend_four=Spy('Necromancer','Mr.',22,4.5)
+friend_five=Spy('rishabh','Mr.',21,4.9,)
 
 
-friends = [friend_one, friend_two, friend_three]
+friends = [friend_one, friend_two, friend_three,friend_four,friend_five]

@@ -6,7 +6,7 @@ from steganography.steganography import Steganography
 from spy_details import spy, Spy, ChatMessage, friends
 #below are the previous statuses
 STATUS_MESSAGES = ['My name is Bond, James Bond', 'Shaken, not stirred.', 'Keeping the British end up, Sir']
-
+# chats=[]
 #List of special words
 SPECIAL_WORDS=['SOS','SAVE ME','NEED HELP']
 new_friend = Spy ('', '', 0, 0.0)
@@ -46,7 +46,7 @@ def add_status(current_status_message):
 
 
 def add_friend():
-    new_friend = Spy ('', '', 0, 0.0)
+    # new_friend = Spy ('', '', 0, 0.0)
     new_friend.name = raw_input("Tere jesa yaar kahaaan ?? Vese tera naam to btaaaa:")
     new_friend.salutation = raw_input("Arrre ye bta tu hai kya... Mr. or Ms.?:")
 
@@ -69,8 +69,8 @@ def load_friends():
         reader = csv.reader(friends_data)
         for row in reader:
                 # spy = Spy(row[1],row[2],row[2], row[4])
-                # print row
-                friends.append(new_friend)
+                print row
+                # friends.append(new_friend)
 
 
 print 'Hey spy '
@@ -97,6 +97,9 @@ def send_encoded_message():
     original_image = raw_input('Abe bole to apni fotuu ka naam bta ?')
     original_path = 'Manzil.jpg'
     text = raw_input('Kya bhejna hai tujhe gupt rkhkr ..mujhe to btana pdega')
+    with open('chats.csv', 'a') as chats_data:
+        writer = csv.writer(chats_data)
+        writer.writerow([text,datetime.now()])
     Steganography.encode(original_image, original_path, text)
     #below ChatMessage function is imported from spy_details.py
     new_chat = ChatMessage(text, True)
@@ -104,7 +107,12 @@ def send_encoded_message():
 
     friends[friend_choice].chats.append(new_chat)
 
-
+def load_chats():
+    with open('friends.csv', 'rb') as chats_data:
+        reader = csv.reader(chats_data)
+        for row in reader:
+                # spy = Spy(row[1],row[2],row[2], row[4])
+                print row
 #This module will enable spy to read the secret message sent by another spy
 #Read Message method starts from here
 def read_message():
@@ -113,6 +121,9 @@ def read_message():
     output_path = raw_input('Abe chl khajoor fotuu ka naam bta')
     secret_text = Steganography.decode(output_path)
     new_chat = ChatMessage(secret_text,False)
+    with open('chats.csv', 'rb') as chats_data:
+        writer = csv.writer(chats_data)
+        writer.writerow([text])
     friends[sender].chats.append(new_chat)
     print "Abe oh kaaliaa ,Tera khana mene kha lia .....aur han Message mere pas hai re!"
     print secret_text
@@ -124,7 +135,7 @@ def read_message():
         print "Spyjan zara dhyaan de ....apke ek bhai bandhu ko sahayta chahiye !"
     if "alert".upper() in secret_text:
         print "Abe oh ghonchuu , Dhyan rkh "
-    if "SOS" in secret_text:
+    if "sos".upper() in secret_text:
         print "Emergency call"
 #below function is used to read chat history
 def read_chat_history():
