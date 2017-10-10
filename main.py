@@ -121,9 +121,6 @@ def read_message():
     output_path = raw_input('Abe chl khajoor fotuu ka naam bta')
     secret_text = Steganography.decode(output_path)
     new_chat = ChatMessage(secret_text,False)
-    with open('chats.csv', 'rb') as chats_data:
-        writer = csv.writer(chats_data)
-        writer.writerow([text])
     friends[sender].chats.append(new_chat)
     print "Abe oh kaaliaa ,Tera khana mene kha lia .....aur han Message mere pas hai re!"
     print secret_text
@@ -142,6 +139,7 @@ def read_chat_history():
     read_for=select_a_friend()
     print '\n'
     for chat in friends[read_for].chats:
+
         if chat.sent_by_me:
             print colored('[%s]'%(chat.time.strftime('%d %B %Y')),'blue')
             print colored('You said:%s' % chat.message, "grey")
@@ -149,7 +147,6 @@ def read_chat_history():
             print colored('[%s]  ' % (chat.time.strftime('%d %B %Y')), "blue")
             print colored('%s' % (friends[read_for].name), "red")
             print colored('%s' % (chat.message), "grey")
-
 
 #below is the function that is used for chat mainly
 def start_chat(spy):
@@ -193,6 +190,7 @@ def start_chat(spy):
 
 if existing.upper() == "Y":
     load_friends()
+    load_chats()
     start_chat(spy)
 elif existing.upper() =="N":
     spy = Spy('', '', 0, 0.0)
