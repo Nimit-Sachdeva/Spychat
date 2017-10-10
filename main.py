@@ -1,5 +1,6 @@
 from datetime import datetime
 import time
+import csv
 from termcolor import colored
 from steganography.steganography import Steganography
 from spy_details import spy, Spy, ChatMessage, friends
@@ -8,7 +9,7 @@ STATUS_MESSAGES = ['My name is Bond, James Bond', 'Shaken, not stirred.', 'Keepi
 
 #List of special words
 SPECIAL_WORDS=['SOS','SAVE ME','NEED HELP']
-
+new_friend = Spy ('', '', 0, 0.0)
 # below function add_status is used to add status by spy just like apps like fb has
 def add_status(current_status_message):
     if spy.current_status_message != None:
@@ -48,16 +49,28 @@ def add_friend():
     new_friend = Spy ('', '', 0, 0.0)
     new_friend.name = raw_input("Tere jesa yaar kahaaan ?? Vese tera naam to btaaaa:")
     new_friend.salutation = raw_input("Arrre ye bta tu hai kya... Mr. or Ms.?:")
-    new_friend.name = new_friend.salutation + " " + new_friend.name
+
     new_friend.age = input("Kitne saalo ka hai ye friend?")
     new_friend.rating = input("bta bhai teri rating bta")
 
-    if new_friend.age > 12 and new_friend.rating >= spy.rating and len(new_friend.name) > 0:
+    if new_friend.age > 12 and new_friend.rating >= 4 and len(new_friend.name) > 0:
         friends.append(new_friend)
+        with open('friends.csv', 'a') as friends_data:
+            writer = csv.writer(friends_data)
+            writer.writerow([new_friend.name,new_friend.salutation, new_friend.age,new_friend.rating, new_friend.is_online])
         print 'Sabhi spyjano ko soochit kiya jata hai k hme ek mitra mila hai !'
     else:
         print 'Tu nahi bn skta dost ....'
+    new_friend.name = new_friend.salutation + " " + new_friend.name
     return len(friends)
+
+def load_friends():
+    with open('friends.csv', 'rb') as friends_data:
+        reader = csv.reader(friends_data)
+        for row in reader:
+                # spy = Spy(row[1],row[2],row[2], row[4])
+                # print row
+                friends.append(new_friend)
 
 
 print 'Hey spy '
@@ -91,10 +104,11 @@ def send_encoded_message():
 
     friends[friend_choice].chats.append(new_chat)
 
+
 #This module will enable spy to read the secret message sent by another spy
 #Read Message method starts from here
-
 def read_message():
+
     sender = select_a_friend()
     output_path = raw_input('Abe chl khajoor fotuu ka naam bta')
     secret_text = Steganography.decode(output_path)
@@ -108,7 +122,7 @@ def read_message():
         del friends[sender]
     if "save me".upper() in secret_text:
         print "Spyjan zara dhyaan de ....apke ek bhai bandhu ko sahayta chahiye !"
-    if "alert" in secret_text:
+    if "alert".upper() in secret_text:
         print "Abe oh ghonchuu , Dhyan rkh "
     if "SOS" in secret_text:
         print "Emergency call"
@@ -167,6 +181,7 @@ def start_chat(spy):
 
 
 if existing.upper() == "Y":
+    load_friends()
     start_chat(spy)
 elif existing.upper() =="N":
     spy = Spy('', '', 0, 0.0)
